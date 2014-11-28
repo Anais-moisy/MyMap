@@ -69,3 +69,8 @@ function addPointToRoute( pos )
 
 	saveRouteUpdate();
 }
+
+function getPointsLength ( )
+{
+	return storageObj.routes[routeIndex].points.length;
+}

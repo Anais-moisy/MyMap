@@ -56,14 +56,29 @@ function initGoogleMap()
 /* This fires every time we get a location */
 var geolocationSuccess = function(position)
 {
-	/* What points are currently on the map? 
+	/* What points are currently on the map? */
 	var currentPaths = myOverlay.getPaths();
 
-	myOverlay.setPaths(currentPaths);*/
 
+
+	/* lets see the new point */
+	focusMap( position );
+
+	/* store the new data */
 	addPointToRoute( position.coords );
 
-	console.log (storageObj);
+	/* if its the first rectangle */
+	if( isFirstRect() )
+	{
+		currentPaths.push( generateRect( position, 1.0, 1.0 ) );
+	}
+	else
+	{
+		drawPath();
+	}
+
+	/* add new cutout to map */
+	myOverlay.setPaths(currentPaths);
 };
 
 /* Handle errors with gps */
@@ -73,10 +88,44 @@ function geolocationError(error)
 		'message: ' + error.message + '\n');
 }
 
+function isFirstRect ()
+{
+	if(	getPointsLength() <= 1 )
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+function focusMap ( p )
+{
+	map.setZoom(16);
+	map.setCenter( new google.maps.LatLng( p.coords.latitude, p.coords.longitude ) );
+}
+
+function drawPath ()
+{
+	// poly at new point
+	// if none of the points are within any current points
+	// 
+}
+
+function getVector ( pointA, pointB )
+{
+	var latDiff = pointB.latitude - pointA.latitude;
+	var lonDiff = pointB.longitude - pointA.longitude;
+	return { x: latDiff, y: lonDiff };
+}
+
 
 /* Make a new rect (circle later?) for our new location */
-function createOverlayShape( point_array, scaleX, scaleY )
+function generateRect( p, scaleX, scaleY )
 {
+	var offset = 0.0001;
+
 	return new google.maps.MVCArray([
 		new google.maps.LatLng((+p.coords.latitude + (offset*scaleY) ), (+p.coords.longitude - (offset*scaleX*2))),
 		new google.maps.LatLng((+p.coords.latitude - (offset*scaleY) ), (+p.coords.longitude - (offset*scaleX*2))),
