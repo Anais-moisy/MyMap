@@ -36,6 +36,14 @@ var app = {
     onDeviceReady: function() {
         //app.receivedEvent('deviceready');
         initGoogleMap();
+
+        if( !storageExists() )
+        {
+            initStorage();
+        }
+
+        loadFromStorage();
+        createRoute();
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
