@@ -56,14 +56,15 @@ function initGoogleMap()
 /* This fires every time we get a location */
 var geolocationSuccess = function(position)
 {
-	/* What points are currently on the map? 
+	/* What points are currently on the map? */
 	var currentPaths = myOverlay.getPaths();
 
-	myOverlay.setPaths(currentPaths);*/
+	/* myOverlay.setPaths(currentPaths);*/
 
 	/* lets see the new point */
 	focusMap();
 
+	/* store the new data */
 	addPointToRoute( position.coords );
 
 	/* if its the first rectangle */
