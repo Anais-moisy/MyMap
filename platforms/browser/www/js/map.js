@@ -2,6 +2,7 @@ var map;
 var myOverlay;
 var storageObj;
 var routeIndex;
+var currentPaths;
 
 
 function initGoogleMap()
@@ -57,7 +58,7 @@ function initGoogleMap()
 var geolocationSuccess = function(position)
 {
 	/* What points are currently on the map? */
-	var currentPaths = myOverlay.getPaths();
+	currentPaths = myOverlay.getPaths();
 
 
 
@@ -74,7 +75,7 @@ var geolocationSuccess = function(position)
 	}
 	else
 	{
-		drawPath();
+		drawPath( position );
 	}
 
 	/* add new cutout to map */
@@ -106,11 +107,12 @@ function focusMap ( p )
 	map.setCenter( new google.maps.LatLng( p.coords.latitude, p.coords.longitude ) );
 }
 
-function drawPath ()
+function drawPath ( p )
 {
 	// poly at new point
 	// if none of the points are within any current points
 	// 
+	currentPaths.push( generateRect( p, 1.0, 1.0 ) );
 }
 
 function getVector ( pointA, pointB )
