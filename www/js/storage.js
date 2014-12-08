@@ -69,6 +69,11 @@ function addPointToRoute( pos )
 	saveRouteUpdate();
 }
 
+function storageToPointCloud()
+{
+	
+}
+
 function getPointsLength ( )
 {
 	if( routeIndex === -1 )

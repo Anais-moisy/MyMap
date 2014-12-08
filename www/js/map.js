@@ -5,6 +5,19 @@ var routeIndex;
 var currentPaths;
 var watchId;
 
+var pointCloud = [];
+
+// var testCloud = [[59.30023, -3.23230], [59.20023, -3.23230],[59.38023, -3.23830],[59.32223, -3.28830],[59.30123, -3.23444],[59.40023, -3.13230],[59.37823, -3.0990]];
+
+
+var lshape = [
+		[51,0],
+		[49,0],
+		[49,1.5],
+		[49.2,1.5],
+		[49.2,0.2],
+		[51,0.2]
+	];
 
 function initGoogleMap()
 {
@@ -19,6 +32,9 @@ function initGoogleMap()
     createRoute();
 
     /* MAP */
+
+    // console.log('cloud to hull');
+    // console.log( hull(testCloud, 15) );
 
 	var mapOptions =
 	{
@@ -36,18 +52,22 @@ function initGoogleMap()
 
 	var overlayEurope = new google.maps.MVCArray(
 		[
-			new google.maps.LatLng(72.484310, -43.466847),
-			new google.maps.LatLng(72.484310, 43.466847),
+			new google.maps.LatLng(34.404477, -35.029347),
 			new google.maps.LatLng(34.404477, 35.029347),
-			new google.maps.LatLng(34.404477, -35.029347)
+			new google.maps.LatLng(72.484310, 43.466847),
+			new google.maps.LatLng(72.484310, -43.466847)
 		]
 	);
+
+
+
+	var placeHolderArray = new google.maps.MVCArray([]);
 
 
 	/* Construct the polygon. */
 	myOverlay = new google.maps.Polygon(
 		{
-			paths: [overlayEurope],
+			paths: [overlayEurope, placeHolderArray],
 			strokeColor: '#e9e5dc',
 			strokeOpacity: 0.8,
 			strokeWeight: 0,
@@ -79,27 +99,31 @@ var geolocationSuccess = function(position)
 	position.coords.latitude = position.coords.latitude.toFixed(5);
 	position.coords.longitude = position.coords.longitude.toFixed(5);
 
-	/* What points are currently on the map? */
-	currentPaths = myOverlay.getPaths();
-
 	/* lets see the new point */
 	focusMap( position );
 
 	/* store the new data */
 	addPointToRoute( position.coords );
 
-	/* if its the first rectangle */
-	if( isFirstRect() )
-	{
-		currentPaths.push( generateRect( position ) );
-		
-		/* add new cutout to map */
-		myOverlay.setPaths(currentPaths);
-	}
-	else
-	{
-		drawPath( position );
-	}
+	/* 
+		create the additional geometry for the hull
+		meaning we can draw even with only one point
+		(4 vertices)
+	*/
+	createRect(position);
+
+	// console.log(pointCloud);
+	// console.log(hull(pointCloud, 15));
+	// console.log(convertToMVCArray(hull(pointCloud, 15)));
+
+
+	/* Push and activate our new path */
+	var paths = myOverlay.getPaths();
+	paths.setAt(2, convertToMVCArray(hull(pointCloud, 1)) );
+	paths.setAt(3, convertToMVCArray(hull(lshape, 5)) );
+
+	myOverlay.setPaths(paths);
+
 };
 
 /* Handle errors with gps */
@@ -127,114 +151,6 @@ function focusMap ( p )
 	map.setCenter( new google.maps.LatLng( (p.coords.latitude - 0.00025), p.coords.longitude ) );
 }
 
-function drawPath ( p )
-{
-
-	var previousLoc = getPreviousPoint();
-	var lastDrawnLocation = null;
-	var initialVector = getVector(previousLoc, p.coords);
-	var numRects, remainingVector;
-
-	remainingVector = initialVector;
-
-	console.log('Vector to new:');
-	console.log(remainingVector);
-
-
-	while ( xHasRemainder(remainingVector.x) || yHasRemainder(remainingVector.y) )
-	{
-
-		console.log('Drawing rect');
-
-		var lonOffset, latOffset;
-
-		if( xHasRemainder(remainingVector.x) )
-		{
-			lonOffset = getLonOffset(remainingVector.x);
-		}
-		else
-		{
-			lonOffset = remainingVector.x;
-		}
-
-		if( yHasRemainder(remainingVector.y) )
-		{
-			latOffset = getLatOffset(remainingVector.y);
-		}
-		else
-		{
-			latOffset = remainingVector.y;
-		}
-
-		var newPosition;
-
-		if(lastDrawnLocation === null)
-		{
-			newPosition = {
-				coords: {
-					latitude: (previousLoc.lat+latOffset),
-					longitude: (previousLoc.lon+lonOffset)
-				}
-			};
-		}
-		else
-		{
-			newPosition = {
-				coords: {
-					latitude: (lastDrawnLocation.lat+latOffset),
-					longitude: (lastDrawnLocation.lon+lonOffset)
-				}
-			};
-		}
-		
-
-		remainingVector.x = remainingVector.x - lonOffset;
-		remainingVector.y = remainingVector.y - latOffset;
-
-		var proposedRect = generateRect(newPosition);
-
-		// if( !hasOverlaps(proposedRect) )
-		// {
-		// console.log('Can draw new rect');
-		// console.log(proposedRect);
-			currentPaths.push(proposedRect);
-
-			/* add new cutout to map */
-			myOverlay.setPaths(currentPaths);
-
-			lastDrawnLocation = previousLoc;
-			lastDrawnLocation.lat = previousLoc.lat+latOffset;
-			lastDrawnLocation.lon = previousLoc.lat+lonOffset;
-		// }
-		// else
-		// {
-		// console.log('Nothing drawable');
-		// }
-
-	}
-
-}
-
-function getVector ( pointA, pointB )
-{
-	var latDiff = Number((pointB.latitude - pointA.lat).toFixed(5));
-	var lonDiff = Number((pointB.longitude - pointA.lon).toFixed(5));
-	return { x: lonDiff, y: latDiff };
-}
-
-
-/* Make a new rect (circle later?) for our new location */
-function generateRect( p )
-{
-	var offset = 0.0001;
-
-	return new google.maps.MVCArray([
-		new google.maps.LatLng(( parseFloat(p.coords.latitude) + offset ), ( parseFloat(p.coords.longitude) - (offset*2))),
-		new google.maps.LatLng(( parseFloat(p.coords.latitude) - offset ), ( parseFloat(p.coords.longitude) - (offset*2))),
-		new google.maps.LatLng(( parseFloat(p.coords.latitude) - offset ), ( parseFloat(p.coords.longitude) + (offset*2))),
-		new google.maps.LatLng(( parseFloat(p.coords.latitude) + offset ), ( parseFloat(p.coords.longitude) + (offset*2)))
-	]);
-}
 
 function clearMap ()
 {
@@ -248,78 +164,37 @@ function clearMap ()
 	// save the json
 }
 
-function hasOverlaps(rect)
+function convertToMVCArray( pairs )
 {
-	var failed = false;
+	var mvc = new google.maps.MVCArray();
+	var i = 0;
 
-	currentPaths.forEach(function(elem, num)
+	while( pairs[i] )
 	{
-		if(num>0)
-		{
-			rect.forEach( function(e, n)
-			{
-				if( google.maps.geometry.poly.containsLocation(e, tempPoly(elem)) )
-				{
-					console.log('overlap test failed');
-					failed = true;
-				}
-			});
-		} /* we don't want to check whether we're in the huge mask polygon */
-		
-	});
+		/* Grab the lat [0] and lon[1] */
+		var latlng = new google.maps.LatLng(pairs[i][0], pairs[i][1]);
+		mvc.push(latlng);
+		i++;
+	}
 
-
-	return failed;
+	return mvc;
 }
 
-function tempPoly(r)
+function createRect(p)
 {
-	var poly = new google.maps.Polygon();
-	poly.setPath(r);
-	return poly;
+	var offsetX = 0.0002;
+	var offsetY = 0.0001;
+
+	/* Add to our big array of points to be made into a hull. */
+	pointCloud.push([(p.coords.latitude + offsetY), (p.coords.longitude - offsetX)]); // NW
+	pointCloud.push([(p.coords.latitude), (p.coords.longitude - offsetX)]); // W *
+	pointCloud.push([(p.coords.latitude - offsetY), (p.coords.longitude - offsetX)]); // SW
+	pointCloud.push([(p.coords.latitude - offsetY), (p.coords.longitude)]); // S
+	pointCloud.push([(p.coords.latitude - offsetY), (p.coords.longitude + offsetX)]); // SE
+	pointCloud.push([(p.coords.latitude), (p.coords.longitude + offsetX)]); // E *
+	pointCloud.push([(p.coords.latitude + offsetY), (p.coords.longitude + offsetX)]); // NE
+	pointCloud.push([(p.coords.latitude + offsetY), (p.coords.longitude)]); // N
 }
 
-function xHasRemainder(x)
-{
-	if(x >= 0.0004 || x <= -0.0004)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
 
-function yHasRemainder(y){
-	if(y >= 0.0002 || y <= -0.0002)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
 
-function getLatOffset(val)
-{
-	if(val > 0)
-	{
-		return 0.0002;
-	}else
-	{
-		return -0.0002;
-	}
-}
-
-function getLonOffset(val)
-{
-	if(val > 0)
-	{
-		return 0.0004;
-	}else
-	{
-		return -0.0004;
-	}
-}
