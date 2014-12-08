@@ -61,8 +61,7 @@ function addPointToRoute( pos )
 	var currentRoute = storageObj.routes[ routeIndex ];
 	currentRoute.points.push(
 		{
-			lat: pos.latitude,
-			lon: pos.longitude,
+			vals: [pos.latitude, pos.longitude],
 			time: theTime()
 		}
 	);
@@ -72,5 +71,17 @@ function addPointToRoute( pos )
 
 function getPointsLength ( )
 {
-	return storageObj.routes[routeIndex].points.length;
+	if( routeIndex === -1 )
+	{
+		return -1;
+	}
+	else
+	{
+		return storageObj.routes[routeIndex].points.length;
+	}
+}
+
+function getPreviousPoint ()
+{
+	return storageObj.routes[routeIndex].points[getPointsLength() - 2];
 }

@@ -35,15 +35,11 @@ var app = {
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function() {
         //app.receivedEvent('deviceready');
-        initGoogleMap();
+        // initGoogleMap();
 
-        if( !storageExists() )
-        {
-            initStorage();
-        }
+        initStorage();
+        MenuDisplay.mapScreen();
 
-        loadFromStorage();
-        createRoute();
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
