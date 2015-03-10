@@ -25,17 +25,100 @@
         <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
         <link rel="stylesheet" type="text/css" href="css/index.css" />
-        <title>Hello World</title>
+        <title>MyMap</title>
     </head>
     <body>
         <div class="app">
-            <h1>Apache Cordova</h1>
-            <div id="deviceready" class="blink">
-                <p class="event listening">Connecting to Device</p>
-                <p class="event received">Device is Ready</p>
+            <div class="full-screen main-interface">
+                <img id="logo" class='main-logo' src="img/icons/icon_app.png"/>
+
+                <!-- Review route -->
+                <img class="open-selected-button" src="img/icons/open_select_ones.png" />
+                <div class='route-review-container'>
+                    <div>
+                        <div class="route-column">DATE</div>
+                        <div class="route-column">NAME</div>
+                        <div class="route-column">SELECT</div>
+                    </div>
+                    <div>
+                        <div class="route-review-row">This functionality will be coming in a future version.</div>
+                        <div class="route-review-row">This functionality will be coming in a future version.</div>
+                        <div class="route-review-row">This functionality will be coming in a future version.</div>
+                    </div>
+                </div>
+
+                <!-- Info page -->
+
+                <p class='app-info'>
+                    This project is about reflecting on the border we create ‘in our mind’, the concept of ‘creating your own border’ and how our habits and routines keep us from going outside of our comfort zone. Moreover, it is a reflection on the borders imposed by politics and territory and the inequality between nationalities restricted in the freedom of movement. <br/><br/>
+                    The map is revealing itself in accordance to the places you have visited, encouraging you to reflect on the place you will have to discover in your life, expend your territories, as well as the one you will never have the possibility to see. 
+                </p>
+
+                <!-- Social page -->
+
+                <div class="social-container">
+                    <img class="social-grid" src="img/icons/message.png" /><img class="social-grid" src="img/icons/email.png" />
+                    <img class="social-grid" src="img/icons/facebook.png" /><img class="social-grid" src="img/icons/twitter.png" />
+                </div>
+
+                <!-- New route -->
+                <div class='new-route-container'>
+                    <h2>Give it a name <br/>(optional)</h2>
+                    <input type="text" name="route_name" class="route_name_text" />
+                    <image src="img/icons/start.png" class="start-btn" />
+                    <p>This will be saved automatically<br/>when you quit the app.</p>
+                </div>
+                <!-- Main Menu route -->
+                <div class='textbtn-container'>
+                    <image src="img/icons/mymap_textbtn.png" class="home-textbtn" id="mymapbtn" />
+                    <image src="img/icons/addroute_textbtn.png" class="home-textbtn" id="addroutebtn" />
+                </div>
+            </div>
+            <div class="full-screen map-canvas" id="map-canvas"></div>
+            <div class="bottom-menu">
+                <ul>
+                    <li>
+                        <img class='tab-icon' src="img/icons/home.png"/>
+                        <h4 class="tab-label">Home</h4>
+                    </li>
+
+                    <li>
+                        <img class='tab-icon' src="img/icons/mymap.png"/>
+                        <h4 class="tab-label">My Map</h4>
+                    </li>
+
+                    <li>
+                        <img class='tab-icon' src="img/icons/addroute.png"/>
+                        <h4 class="tab-label">Add Route</h4>
+                    </li>
+
+                    <li>
+                        <img class='tab-icon' src="img/icons/history.png"/>
+                        <h4 class="tab-label">History</h4>
+                    </li>
+
+                    <li>
+                        <img class='tab-icon' src="img/icons/share.png"/>
+                        <h4 class="tab-label">Share</h4>
+                    </li>
+
+                    <li>
+                        <img class='tab-icon' src="img/icons/info.png"/>
+                        <h4 class="tab-label">Info</h4>
+                    </li>
+                </ul>
             </div>
         </div>
+
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script type="text/javascript" src="js/fastclick.js"></script>
         <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="js/hull.js"></script>
+        <script type="text/javascript" src="js/interface.js"></script>
+        <script type="text/javascript" src="js/storage.js"></script>
+        <script type="text/javascript" src="js/map.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyApOJOQG01-hx1Ik41Zw41Lb2oizvdK7RE"></script>
+
     </body>
 </html>

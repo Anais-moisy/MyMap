@@ -43,13 +43,14 @@ function saveRouteUpdate ()
 	localStorage.pointStorage = JSON.stringify(storageObj);
 }
 
-function createRoute ()
+function createRoute (named)
 {
 	routeIndex = storageObj.routes.length;
 
 	storageObj.routes.push(
 		{
-			points: []
+			points: [],
+			name: named
 		}
 	);
 
@@ -67,6 +68,11 @@ function addPointToRoute( pos )
 	);
 
 	saveRouteUpdate();
+}
+
+function storageToPointCloud()
+{
+
 }
 
 function getPointsLength ( )

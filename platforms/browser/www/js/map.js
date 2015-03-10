@@ -7,17 +7,19 @@ var watchId;
 
 var pointCloud = [];
 
+var timeExpired = true;
+
 // var testCloud = [[59.30023, -3.23230], [59.20023, -3.23230],[59.38023, -3.23830],[59.32223, -3.28830],[59.30123, -3.23444],[59.40023, -3.13230],[59.37823, -3.0990]];
 
 
-var lshape = [
-		[51,0],
-		[49,0],
-		[49,1.5],
-		[49.2,1.5],
-		[49.2,0.2],
-		[51,0.2]
-	];
+// var lshape = [
+//	[51,0],
+//	[49,0],
+//	[49,1.5],
+//	[49.2,1.5],
+//	[49.2,0.2],
+//	[51,0.2]
+// ];
 
 function initGoogleMap()
 {
@@ -32,6 +34,8 @@ function initGoogleMap()
     createRoute();
 
     /* MAP */
+
+    setInterval(function(){ timeExpired = true; console.log('tick'); }, 2000);
 
     // console.log('cloud to hull');
     // console.log( hull(testCloud, 15) );
@@ -88,6 +92,15 @@ function initGoogleMap()
 /* This fires every time we get a location */
 var geolocationSuccess = function(position)
 {
+
+	if(!timeExpired)
+	{
+		console.log('too soon');
+		return;
+	}
+
+	timeExpired = false;
+
 	console.log('position');
 
 	if(map===null)
@@ -117,11 +130,14 @@ var geolocationSuccess = function(position)
 	// console.log(convertToMVCArray(hull(pointCloud, 15)));
 
 
-	/* Push and activate our new path */
+	/* Get the current path obj */
 	var paths = myOverlay.getPaths();
-	paths.setAt(2, convertToMVCArray(hull(pointCloud, 1)) );
-	paths.setAt(3, convertToMVCArray(hull(lshape, 5)) );
 
+	/* Generate hull */
+	var calculatedHull = hull(pointCloud, 0.001);
+
+	/* Put new hull on the map */
+	paths.setAt(2, convertToMVCArray(calculatedHull) );
 	myOverlay.setPaths(paths);
 
 };
@@ -147,7 +163,7 @@ function isFirstRect ()
 
 function focusMap ( p )
 {
-	map.setZoom(16);
+	map.setZoom(17);
 	map.setCenter( new google.maps.LatLng( (p.coords.latitude - 0.00025), p.coords.longitude ) );
 }
 
@@ -167,14 +183,12 @@ function clearMap ()
 function convertToMVCArray( pairs )
 {
 	var mvc = new google.maps.MVCArray();
-	var i = 0;
 
-	while( pairs[i] )
+	for( var i=0; i<pairs.length; i++ )
 	{
 		/* Grab the lat [0] and lon[1] */
 		var latlng = new google.maps.LatLng(pairs[i][0], pairs[i][1]);
 		mvc.push(latlng);
-		i++;
 	}
 
 	return mvc;
@@ -182,8 +196,9 @@ function convertToMVCArray( pairs )
 
 function createRect(p)
 {
-	var offsetX = 0.0002;
 	var offsetY = 0.0001;
+	var offsetX = 0.0002;
+
 
 	/* Add to our big array of points to be made into a hull. */
 	pointCloud.push([(p.coords.latitude + offsetY), (p.coords.longitude - offsetX)]); // NW
@@ -194,6 +209,32 @@ function createRect(p)
 	pointCloud.push([(p.coords.latitude), (p.coords.longitude + offsetX)]); // E *
 	pointCloud.push([(p.coords.latitude + offsetY), (p.coords.longitude + offsetX)]); // NE
 	pointCloud.push([(p.coords.latitude + offsetY), (p.coords.longitude)]); // N
+	
+
+	// markerForPoint(new google.maps.LatLng(p.coords.latitude, p.coords.longitude));
+
+}
+
+function markerForPoint(ll)
+{
+	new google.maps.Marker({
+		position: ll,
+		map: map,
+		icon: {
+			path: google.maps.SymbolPath.CIRCLE,
+			fillColor: 'red',
+			fillOpacity: 0.4,
+			scale: 4.5,
+			strokeColor: 'white',
+			strokeWeight: 1
+		}
+	});
+
+
+}
+
+function randomInRange(min, max) {
+	return Math.random() * (max-min) + min;
 }
 
 

@@ -38,7 +38,9 @@ var app = {
         // initGoogleMap();
 
         initStorage();
-        MenuDisplay.mapScreen();
+        MenuDisplay.activateMenu();
+        MenuDisplay.miscButtons();
+        // MenuDisplay.mainMenu();
 
     },
     // Update DOM on a Received Event

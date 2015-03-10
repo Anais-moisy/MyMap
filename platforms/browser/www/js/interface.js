@@ -2,21 +2,21 @@ var MenuDisplay = {
 
 	miscButtons: function ()
 	{
-		$('.home-textbtn').click(function(event) {
+		$('.home-textbtn').bind('tap', function(event) {
 			if( $(this)[0].id === "mymapbtn" )
 			{
-				MenuDisplay.newRouteMenu();
+				MenuDisplay.mapScreen();
 			}
 			else if( $(this)[0].id === "addroutebtn" )
 			{
-				MenuDisplay.mapScreen();
+				MenuDisplay.newRouteMenu();
 			}
 		});
 	},
 
 	activateMenu :function ()
 	{
-		$('.bottom-menu li').click(function(event) {
+		$('.bottom-menu li').bind('tap', function(event) {
 			var label = $(this).children('h4')[0].innerHTML;
 			label = String(label).toUpperCase();
 
@@ -112,6 +112,11 @@ var MenuDisplay = {
 		$('.main-interface').show();
 		$('.open-selected-button').show();
 		$('.route-review-container').show();
+
+		var div = $(".route-review-container div:nth-child(2)");
+		var count = div.children().length;
+
+		console.log('Number of routes displayed: '+count);
 
 		clearMap();
 	},

@@ -113,11 +113,6 @@ var MenuDisplay = {
 		$('.open-selected-button').show();
 		$('.route-review-container').show();
 
-		var div = $(".route-review-container div:nth-child(2)");
-		var count = div.children().length;
-
-		console.log('Number of routes displayed: '+count);
-
 		clearMap();
 	},
 
