@@ -1,5 +1,3 @@
-/* NEEDS CONVERSION TO JAVA */
-
 float MERCATOR_RANGE = 256.0f;
 
 float bound(float value, float opt_min, float opt_max) {

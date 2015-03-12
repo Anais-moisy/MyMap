@@ -15,7 +15,8 @@ int spacer;
 PImage imgTiles;
 
 void setup() {
-  size(640, 360);
+  size(SKETCH_WIDTH, SKETCH_HEIGHT);
+  
   maxDistance = dist(width/2, height/2, width, height);
   distances = new float[width][height];
   for (int y = 0; y < height; y++) {
@@ -26,7 +27,7 @@ void setup() {
   }
   spacer = 10;
   
-  String url = "https://maps.googleapis.com/maps/api/staticmap?center=-15.800513,-47.91378&zoom=11&size=500x500&scale=2&format=png32.png";
+  String url = "https://maps.googleapis.com/maps/api/staticmap?center=54.640957,-3.5444396&zoom=14&size=250x250&scale=2&format=png32.png";
   imgTiles = loadImage(url, "png");
   
   noLoop();  // Run once and stop
@@ -45,7 +46,7 @@ void draw() {
     }
   }
   
-  image(imgTiles, 0, 0, 400, 400);
+  image(imgTiles, 0, 0);
 }
 
 
