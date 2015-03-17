@@ -8,46 +8,28 @@
  * By Chris Barker, Anais Moisy, Jen Southern and Chris Speed 
  */
 
-float[][] distances;
-float maxDistance;
-int spacer;
 
-PImage imgTiles;
+PImage mapTiles[] = new PImage[1];
+PImage maskTiles[];
+
 
 void setup() {
   size(SKETCH_WIDTH, SKETCH_HEIGHT);
+  mapTiles[0] = loadImage(generateTileURL(startLocation.lat, startLocation.lng), "png");
   
-  maxDistance = dist(width/2, height/2, width, height);
-  distances = new float[width][height];
-  for (int y = 0; y < height; y++) {
-    for (int x = 0; x < width; x++) {
-      float distance = dist(width/2, height/2, x, y);
-      distances[x][y] = distance/maxDistance * 255;
-    }
-  }
-  spacer = 10;
-  
-  String url = "https://maps.googleapis.com/maps/api/staticmap?center=54.640957,-3.5444396&zoom=14&size=250x250&scale=2&format=png32.png";
-  imgTiles = loadImage(url, "png");
-  
+  createMaskTiles();
   noLoop();  // Run once and stop
 }
 
 void draw() {
   background(0);
-  // This embedded loop skips over values in the arrays based on
-  // the spacer variable, so there are more values in the array
-  // than are drawn here. Change the value of the spacer variable
-  // to change the density of the points
-  for (int y = 0; y < height; y += spacer) {
-    for (int x = 0; x < width; x += spacer) {
-      stroke(distances[x][y]);
-      point(x + spacer/2, y + spacer/2);
-    }
-  }
-  
-  image(imgTiles, 0, 0);
+  image(mapTiles[0], 0, 0);
+  image(maskTiles[0], 0 , 0);
 }
+
+
+
+
 
 
 
