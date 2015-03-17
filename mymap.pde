@@ -5,18 +5,19 @@
  * Accepts GPS data from wearable trackers.
  * Animates emerging paths.
  *
- * By Chris Barker, Anais Moisy, Jen Southern and Chris Speed 
+ * By Anais Moisy, Chris Barker
+ * with thanks to Jen Southern and Chris Speed 
  */
 
 
-PImage mapTiles[] = new PImage[1];
+PImage mapTiles[];
 PImage maskTiles[];
 
 
 void setup() {
   size(SKETCH_WIDTH, SKETCH_HEIGHT);
-  mapTiles[0] = loadImage(generateTileURL(startLocation.lat, startLocation.lng), "png");
   
+  createMapTiles();
   createMaskTiles();
   noLoop();  // Run once and stop
 }
