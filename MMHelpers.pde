@@ -22,7 +22,7 @@ String generateTileURL(float lat, float lng)
   String url = URL_BASE + "center=" + lat + "," + lng;
   url += "&zoom=" + ZOOM_LEVEL;
   url += "&size=" + getTileSize().width + "x" + getTileSize().height;
-  url += "&scale=" + SCALE_FACTOR + "&format=png32.png";
+  url += "&scale=" + SCALE_FACTOR + "&format=png32.png&key=" + API_KEY;
   
   return url;
 }
@@ -33,7 +33,7 @@ void createMaskTiles()
   
   for(int i=0; i<maskTiles.length; i++)
   {
-    maskTiles[i] = createImage(getTileSize().width*SCALE_FACTOR, getTileSize().height*SCALE_FACTOR, ARGB);
+    maskTiles[i] = createImage(getTileSize().width*SCALE_FACTOR, getTileSize().height*SCALE_FACTOR, ARGB); 
     maskTiles[i].loadPixels();
     for (int x = 0; x < maskTiles[i].pixels.length; x++) {
       maskTiles[i].pixels[x] = color(190, 190, 190, 225); 

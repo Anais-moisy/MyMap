@@ -1,6 +1,7 @@
 // -------- //
 //  basics  //
 // -------- //
+
 int SKETCH_WIDTH = 600;
 int SKETCH_HEIGHT = 400;
 
