@@ -12,20 +12,36 @@
 
 PImage mapTiles[];
 PImage maskTiles[];
-
+PImage testMask;
 
 void setup() {
   size(SKETCH_WIDTH, SKETCH_HEIGHT);
   
   createMapTiles();
   createMaskTiles();
+  
+  testMask = createImage(getTileSize().width*SCALE_FACTOR, getTileSize().height*SCALE_FACTOR, RGB);
+  for (int i = 0; i < testMask.pixels.length; i++) {
+    if(i%5==0)
+    {
+      testMask.pixels[i] = color(0);
+    }else
+    {
+      testMask.pixels[i] = color(255);
+    }
+  }
+  testMask.updatePixels();
+  
+  
   noLoop();  // Run once and stop
 }
 
 void draw() {
   background(0);
   image(mapTiles[0], 0, 0);
+  maskTiles[0].mask(testMask);
   image(maskTiles[0], 0 , 0);
+  
 }
 
 
