@@ -14,8 +14,14 @@ PImage mapTiles[];
 PImage maskTiles[];
 PImage testMask;
 
+int x,y = 0;
+
+MouseTracker mt;
+
 void setup() {
   size(SKETCH_WIDTH, SKETCH_HEIGHT);
+  
+  mt = new MouseTracker();
   
   createMapTiles();
   createMaskTiles();
@@ -31,20 +37,53 @@ void setup() {
     }
   }
   testMask.updatePixels();
+ 
 }
 
 void draw() {
   background(0);
+  
+  if( SKETCH_DRAGGABLE )
+  {
+    translate(x,y);
+  }
+  
   image(mapTiles[0], 0, 0);
-  maskTiles[0].mask(testMask);
+//  maskTiles[0].mask(testMask);
   image(maskTiles[0], 0 , 0);
+  frame.setTitle(int(frameRate) + " fps");
 }
 
 void mouseDragged() {
-  pushMatrix();
-  translate(mouseX, mouseY);
-  popMatrix(); 
-  println("boo");
+  mt.setX(mouseX);
+  mt.setY(mouseY);
+  
+  x = (-mt.getXOffset() / 5) + x;
+  y = (-mt.getYOffset() / 5) + y;
 }
 
+void mousePressed()
+{
+  mt.setOrigin(mouseX, mouseY);
+}
+
+void mouseReleased()
+{
+}
+
+boolean canDrag()
+{
+  if( x>(-SKETCH_WIDTH*2)
+      && x<(SKETCH_WIDTH*2)
+      && y>(-SKETCH_HEIGHT*2)
+      && y<(SKETCH_HEIGHT*2)
+     )
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+}
 

@@ -2,8 +2,10 @@
 //  basics  //
 // -------- //
 
-int SKETCH_WIDTH = 600;
-int SKETCH_HEIGHT = 400;
+int SKETCH_WIDTH = 900;
+int SKETCH_HEIGHT = 500;
+
+boolean SKETCH_DRAGGABLE = true;
 
 int SCALE_FACTOR = 1;
 
