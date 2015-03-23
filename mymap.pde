@@ -22,7 +22,7 @@ void setup() {
   
   testMask = createImage(getTileSize().width*SCALE_FACTOR, getTileSize().height*SCALE_FACTOR, RGB);
   for (int i = 0; i < testMask.pixels.length; i++) {
-    if(i%5==0)
+    if(i%5==0 || i%3==0)
     {
       testMask.pixels[i] = color(0);
     }else
@@ -31,9 +31,6 @@ void setup() {
     }
   }
   testMask.updatePixels();
-  
-  
-  noLoop();  // Run once and stop
 }
 
 void draw() {
@@ -41,12 +38,13 @@ void draw() {
   image(mapTiles[0], 0, 0);
   maskTiles[0].mask(testMask);
   image(maskTiles[0], 0 , 0);
-  
 }
 
-
-
-
-
+void mouseDragged() {
+  pushMatrix();
+  translate(mouseX, mouseY);
+  popMatrix(); 
+  println("boo");
+}
 
 
