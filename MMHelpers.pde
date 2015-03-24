@@ -12,9 +12,21 @@ class ObjSize {
 
 ObjSize getTileSize()
 {
-  int objWidth = int(SKETCH_WIDTH / (TILE_COLUMNS + 1));
-  int objHeight = int(SKETCH_HEIGHT / (TILE_ROWS + 1));
+  int objWidth = int(SKETCH_WIDTH / TILE_COLUMNS);
+  int objHeight = int(SKETCH_HEIGHT / TILE_ROWS);
+  
+  if(objWidth > 600)
+  {
+    objWidth = 600;
+  }
+  
+  if(objHeight > 600)
+  {
+    objHeight = 600;
+  }
+
   return new ObjSize(objWidth,objHeight);
+
 }
 
 String generateTileURL(float lat, float lng)
