@@ -4,5 +4,7 @@ Instructions to follow
 
 ## Personal notes
 
-- Tileset of 9(?) Google Map Static images with the middle one centred.
-- Simple geometry over the top to cut out of with paths and then use mask() to reveal
+- Parse some GPX fakery.
+- Check performance in large format
+- Cache the map images
+- Sort out some awesome controls for the 2nd frame (playback speed, start/stop)
