@@ -50,8 +50,16 @@ void draw() {
     translate(x,y);
   }
   
-  image(mapTiles[0], 0, 0);
-//  maskTiles[0].mask(testMask);
+  int tileIndex = 0;
+  for(int x=-1; x<3; x++)
+  {
+    for(int y=-1; y<3; y++)
+    {
+      image(mapTiles[tileIndex], x*(getTileSize().width*SCALE_FACTOR), y*(getTileSize().height*SCALE_FACTOR));
+      tileIndex++;
+    }
+  }
+//maskTiles[0].mask(testMask);
   image(maskTiles[0], 0 , 0);
   frame.setTitle(int(frameRate) + " fps");
 }

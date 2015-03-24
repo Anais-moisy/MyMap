@@ -12,8 +12,8 @@ class ObjSize {
 
 ObjSize getTileSize()
 {
-  int objWidth = int(SKETCH_WIDTH / 3);
-  int objHeight = int(SKETCH_HEIGHT / 3);
+  int objWidth = int(SKETCH_WIDTH / 2);
+  int objHeight = int(SKETCH_HEIGHT / 2);
   
   if(objWidth > 600)
   {
@@ -67,6 +67,7 @@ void createMapTiles()
   for(int i=0; i<mapTiles.length; i++)
   {
     mapTiles[i] = loadImage(generateTileURL(START_LOCATION), "png");
+    image(mapTiles[i], i*(getTileSize().width*SCALE_FACTOR), i*(getTileSize().height*SCALE_FACTOR));
   }
   
 }
