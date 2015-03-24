@@ -14,12 +14,17 @@ PImage mapTiles[];
 PImage maskTiles[];
 PImage testMask;
 
+ControlApplet controls;
+PFrame f;
+
 int x,y = 0;
 
 MouseTracker mt;
 
 
 void setup() {
+  f = new PFrame();
+  
   size(SKETCH_WIDTH, SKETCH_HEIGHT);
   
   mt = new MouseTracker();
@@ -62,6 +67,9 @@ void draw() {
 //maskTiles[0].mask(testMask);
   image(maskTiles[0], 0 , 0);
   frame.setTitle(int(frameRate) + " fps");
+  
+  
+  controls.redraw();
 }
 
 void mouseDragged() {
