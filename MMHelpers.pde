@@ -12,8 +12,8 @@ class ObjSize {
 
 ObjSize getTileSize()
 {
-  int objWidth = int(SKETCH_WIDTH / TILE_COLUMNS);
-  int objHeight = int(SKETCH_HEIGHT / TILE_ROWS);
+  int objWidth = int(SKETCH_WIDTH / 3);
+  int objHeight = int(SKETCH_HEIGHT / 3);
   
   if(objWidth > 600)
   {
@@ -39,8 +39,8 @@ String generateTileURL(GLatLng latlng)
   url += "&size=" + getTileSize().width + "x" + getTileSize().height;
   url += "&scale=" + SCALE_FACTOR + "&format=png32.png&key=" + API_KEY;
   
-  HashMap<String, Float> hm = getCorners(latlng, ZOOM_LEVEL, getTileSize().width, getTileSize().height);
-  println(hm.get("N") + " " + hm.get("E") + " " + hm.get("S") + " " + hm.get("W") + " ");
+  FloatDict fd = getCorners(latlng, ZOOM_LEVEL, getTileSize().width, getTileSize().height);
+  println(fd.get("N") + " " + fd.get("E") + " " + fd.get("S") + " " + fd.get("W") + " ");
   
   return url;
 }
@@ -62,7 +62,7 @@ void createMaskTiles()
 
 void createMapTiles()
 {
-  mapTiles = new PImage[TILE_ROWS*TILE_COLUMNS];
+  mapTiles = new PImage[16];
   
   for(int i=0; i<mapTiles.length; i++)
   {

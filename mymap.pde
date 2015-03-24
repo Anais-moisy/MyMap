@@ -18,6 +18,7 @@ int x,y = 0;
 
 MouseTracker mt;
 
+
 void setup() {
   size(SKETCH_WIDTH, SKETCH_HEIGHT);
   
@@ -37,7 +38,8 @@ void setup() {
     }
   }
   testMask.updatePixels();
- 
+
+
 }
 
 void draw() {

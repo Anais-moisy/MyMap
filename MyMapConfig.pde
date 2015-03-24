@@ -17,4 +17,3 @@ String URL_BASE = "https://maps.googleapis.com/maps/api/staticmap?";
 int ZOOM_LEVEL = 14;
 
 
-

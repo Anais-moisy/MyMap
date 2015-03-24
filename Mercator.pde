@@ -67,8 +67,8 @@ class MercatorProjection {
   
 };
 
-HashMap getCorners(GLatLng center, int zoom, int mapWidth, int mapHeight){
-    HashMap<String,Float> hm = new HashMap<String,Float>();
+FloatDict getCorners(GLatLng center, int zoom, int mapWidth, int mapHeight){
+    FloatDict fd = new FloatDict();
     float scale = pow(2, zoom);
     MercatorProjection proj = new MercatorProjection();
     GMapPoint centerPx = proj.fromLatLngToPoint(center);
@@ -76,9 +76,9 @@ HashMap getCorners(GLatLng center, int zoom, int mapWidth, int mapHeight){
     GLatLng SWLatLon = proj.fromPointToLatLng(SWPoint);
     GMapPoint NEPoint = new GMapPoint(centerPx.x+(mapWidth/2)/scale, centerPx.y-(mapHeight/2)/scale);
     GLatLng NELatLon = proj.fromPointToLatLng(NEPoint);
-    hm.put("N", NELatLon.lat);
-    hm.put("E", NELatLon.lng);
-    hm.put("S", SWLatLon.lat);
-    hm.put("W", SWLatLon.lng);
-    return hm;
+    fd.set("N", NELatLon.lat);
+    fd.set("E", NELatLon.lng);
+    fd.set("S", SWLatLon.lat);
+    fd.set("W", SWLatLon.lng);
+    return fd;
 }
