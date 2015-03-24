@@ -1,3 +1,5 @@
+import java.util.Map;
+
 float MERCATOR_RANGE = 256.0f;
 
 float bound(float value, float opt_min, float opt_max) {
@@ -38,10 +40,10 @@ class MercatorProjection {
   float pixelsPerLonDegree_ = MERCATOR_RANGE / 360;
   float pixelsPerLonRadian_ = MERCATOR_RANGE / (float)(2 * Math.PI);
   
-  GMapPoint fromLatLngToPoint (GLatLng latLng, GMapPoint opt_point) {
+  GMapPoint fromLatLngToPoint (GLatLng latLng) {
     MercatorProjection me = this;
   
-    GMapPoint point = opt_point;
+    GMapPoint point = new GMapPoint(0,0);
   
     GMapPoint origin = me.pixelOrigin_;
     point.x = origin.x + latLng.lng * me.pixelsPerLonDegree_;
@@ -65,8 +67,18 @@ class MercatorProjection {
   
 };
 
-
-
-
-
-//pixelCoordinate = worldCoordinate * Math.pow(2,zoomLevel)
+HashMap getCorners(GLatLng center, int zoom, int mapWidth, int mapHeight){
+    HashMap<String,Float> hm = new HashMap<String,Float>();
+    float scale = pow(2, zoom);
+    MercatorProjection proj = new MercatorProjection();
+    GMapPoint centerPx = proj.fromLatLngToPoint(center);
+    GMapPoint SWPoint = new GMapPoint(centerPx.x-(mapWidth/2)/scale, centerPx.y+(mapHeight/2)/scale);
+    GLatLng SWLatLon = proj.fromPointToLatLng(SWPoint);
+    GMapPoint NEPoint = new GMapPoint(centerPx.x+(mapWidth/2)/scale, centerPx.y-(mapHeight/2)/scale);
+    GLatLng NELatLon = proj.fromPointToLatLng(NEPoint);
+    hm.put("N", NELatLon.lat);
+    hm.put("E", NELatLon.lng);
+    hm.put("S", SWLatLon.lat);
+    hm.put("W", SWLatLon.lng);
+    return hm;
+}

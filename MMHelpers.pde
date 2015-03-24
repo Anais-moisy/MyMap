@@ -29,12 +29,18 @@ ObjSize getTileSize()
 
 }
 
-String generateTileURL(float lat, float lng)
+String generateTileURL(GLatLng latlng)
 {
+  float lat = latlng.lat;
+  float lng = latlng.lng;
+  
   String url = URL_BASE + "center=" + lat + "," + lng;
   url += "&zoom=" + ZOOM_LEVEL;
   url += "&size=" + getTileSize().width + "x" + getTileSize().height;
   url += "&scale=" + SCALE_FACTOR + "&format=png32.png&key=" + API_KEY;
+  
+  HashMap<String, Float> hm = getCorners(latlng, ZOOM_LEVEL, getTileSize().width, getTileSize().height);
+  println(hm.get("N") + " " + hm.get("E") + " " + hm.get("S") + " " + hm.get("W") + " ");
   
   return url;
 }
@@ -60,7 +66,7 @@ void createMapTiles()
   
   for(int i=0; i<mapTiles.length; i++)
   {
-    mapTiles[i] = loadImage(generateTileURL(START_LOCATION.lat, START_LOCATION.lng), "png");
+    mapTiles[i] = loadImage(generateTileURL(START_LOCATION), "png");
   }
   
 }
