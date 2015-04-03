@@ -1,10 +1,18 @@
 import java.util.Calendar;
+import java.io.File;
 
 XML xml;
+File gpxDir;
+File gpxArray[];
 
 void parseXML()
 {
-  xml = loadXML("garmin_02042015.gpx");
+  gpxDir = new File( dataPath("") + "/gpx" );
+  gpxArray = gpxDir.listFiles();
+  
+  println(gpxArray);
+  
+  xml = loadXML(gpxArray[0].getPath());
   XML[] trkpt = xml.getChild("trk").getChild("trkseg").getChildren("trkpt");
   
   for(int i=0; i<trkpt.length; i++)
@@ -14,11 +22,6 @@ void parseXML()
   }
   
 }
-
-// position obj
-// glatlng
-// timestamp
-
 
 class WayPoint {
   private GLatLng position;
