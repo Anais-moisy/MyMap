@@ -10,29 +10,42 @@ void parseXML()
   gpxDir = new File( dataPath("") + "/gpx" );
   gpxArray = gpxDir.listFiles();
   
-  println(gpxArray);
+  waypoints = new WayPoint[gpxArray.length][];
+//  println(gpxArray);
   
-  xml = loadXML(gpxArray[0].getPath());
-  XML[] trkpt = xml.getChild("trk").getChild("trkseg").getChildren("trkpt");
-  
-  for(int i=0; i<trkpt.length; i++)
+  for(int i=0; i<gpxArray.length; i++)
   {
-    Calendar cal = javax.xml.bind.DatatypeConverter.parseDateTime(trkpt[i].getChild("time").getContent());
-    println(cal.getTimeInMillis());
+    // load the data, find out how man points it has and allocate array space
+    xml = loadXML(gpxArray[0].getPath());
+    XML[] trkpt = xml.getChild("trk").getChild("trkseg").getChildren("trkpt");
+    waypoints[i] = new WayPoint[trkpt.length];
+    
+    for(int j=0; j<trkpt.length; j++)
+    {
+      // timestamp from gpx trkpt
+      Calendar cal = javax.xml.bind.DatatypeConverter.parseDateTime(trkpt[i].getChild("time").getContent());
+      
+      // position from gpx trkpt
+      GLatLng latlng = new GLatLng( trkpt[i].getFloat("lat"), trkpt[i].getFloat("lon") );
+      waypoints[i][j] = new WayPoint(latlng, cal.getTimeInMillis(), "");
+    }
   }
+  
+  
+
   
 }
 
 class WayPoint {
   private GLatLng position;
   private long timestamp;
+  private String routeName;
   
-  public WayPoint(GLatLng pos, long ts)
+  public WayPoint(GLatLng pos, long ts, String name )
   {
     this.position = pos;
     this.timestamp = ts;
   }
-  
   
   public GLatLng getPos()
   {
