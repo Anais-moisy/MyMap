@@ -14,3 +14,31 @@ void parseXML()
   }
   
 }
+
+// position obj
+// glatlng
+// timestamp
+
+
+class WayPoint {
+  private GLatLng position;
+  private long timestamp;
+  
+  public WayPoint(GLatLng pos, long ts)
+  {
+    this.position = pos;
+    this.timestamp = ts;
+  }
+  
+  
+  public GLatLng getPos()
+  {
+    return this.position;
+  }
+  
+  public long getTimestamp()
+  {
+    return this.timestamp;
+  }
+ 
+}
