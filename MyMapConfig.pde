@@ -16,6 +16,6 @@ GLatLng START_LOCATION = new GLatLng(54.6378146,-3.5488916);
 String URL_BASE = "https://maps.googleapis.com/maps/api/staticmap?";
 int ZOOM_LEVEL = 14;
 
-float PLAYBACK_INTERVAL = 1.0;
+float SECONDS_PER_TICK = 10.0;
 
 
