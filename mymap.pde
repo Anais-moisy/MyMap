@@ -10,10 +10,14 @@
  */
 
 boolean moveFlag;
+boolean stepThrough = true;
 
 PImage mapTiles[];
 PImage maskTiles[];
 PImage testMask;
+
+long startTime = 999999999;
+long currentTime = 0;
 
 WayPoint[] waypoints[];
 
@@ -29,6 +33,7 @@ void setup() {
   frameRate(40);
   
   parseXML();
+  stepThrough = false;
   moveFlag = false;
   
   size(SKETCH_WIDTH, SKETCH_HEIGHT);
@@ -52,7 +57,6 @@ void setup() {
   }
   testMask.updatePixels();
 
-
 }
 
 void draw() {
@@ -60,9 +64,13 @@ void draw() {
   
   background(0);
   
-  if( fc % 20 == 0 )
+  if( stepThrough )
   {
-//    println("tick");
+    if( fc % 20 == 0 )
+    {
+      println(stepThrough);
+      println("tick");
+    }
   }
   
   if( SKETCH_DRAGGABLE )
@@ -121,8 +129,3 @@ boolean canDrag()
       return false;
     }
 }
-
-void playVis()
-{
-}
-
