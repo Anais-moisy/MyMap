@@ -66,7 +66,7 @@ void createMaskTiles()
 void createMapTiles()
 {
   mapTiles = new PImage[16];
-  GLatLng[] tileCentres = generateTileCenters();
+  GLatLng[] tileCentres = generateTileCentres();
   
   for(int i=0; i<mapTiles.length; i++)
   {
@@ -77,16 +77,22 @@ void createMapTiles()
     String filename = full_url.substring(filename_start, filename_end) + ".png";
     
     File f = new File(dataPath("") + "/tiles/workington/" + filename);
-    if (!f.exists()) {
-      println("File does not exist");
-      try {
+    if (!f.exists())
+    {
+//      println("Need to download tile");
+      try
+      {
         saveImage( full_url, f.getPath() );
       } catch (IOException e)
       {
         println(e);
       }
-    } 
-    mapTiles[i] = loadImage(generateTileURL(START_LOCATION), "png");
+    }
+   else
+   {
+//     println("Using a cached tile");
+   }
+    mapTiles[i] = loadImage(generateTileURL(tileCentres[i]), "png");
   }
   
 }
@@ -108,23 +114,31 @@ void saveImage(String imageUrl, String destinationFile) throws IOException
   os.close();
 }
 
-GLatLng[] generateTileCenters()
+GLatLng[] generateTileCentres()
 {
   FloatDict fd = getCorners(START_LOCATION, ZOOM_LEVEL, getTileSize().width, getTileSize().height);
   float lat_difference = ( START_LOCATION.lat - fd.get("S") )*2;
   float lng_difference = ( START_LOCATION.lng - fd.get("W") )*2;
-  println(lat_difference);
-  println(lng_difference);
 
-  GLatLng[] centers = new GLatLng[16];
+  GLatLng[] centres = new GLatLng[16];
   
-  for(int lat=2; lat>=-2; lat--)
- {
-   for(int lng=-2; lng<=2; lng++)
-   {
-     centers.push(new GLatLng( START_LOCATION.lat+(lat_difference*lat), START_LOCATION.lng+(lng_difference*lng) ));
-   }
- }
+  int centres_index = 0;
+  for(int lat=2; lat>-2; lat--)
+  {
+    for(int lng=-1; lng<3; lng++)
+    {
+      centres[centres_index] =  new GLatLng(START_LOCATION.lat+(lat_difference*lat), START_LOCATION.lng+(lng_difference*lng) );
+      centres_index++;
+    }
+  }
  
-  return centers;
+  return centres;
+}
+
+void updateStartTime( long newStart )
+{
+  if( newStart < startTime )
+  {
+    startTime = newStart;
+  }
 }
