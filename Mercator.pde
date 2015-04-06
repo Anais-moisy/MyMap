@@ -52,7 +52,7 @@ class MercatorProjection {
     float siny = bound(((float)Math.sin(degreesToRadians(latLng.lat))), -0.9999, 0.9999);
     point.y = origin.y + 0.5 * (float)(Math.log((1 + siny) / (1 - siny))) * -me.pixelsPerLonRadian_;
     return point;
-  };
+  }
   
   GLatLng fromPointToLatLng(GMapPoint point) {
     MercatorProjection me = this;
@@ -62,10 +62,10 @@ class MercatorProjection {
     float latRadians = (point.y - origin.y) / -me.pixelsPerLonRadian_;
     float lat = radiansToDegrees((float)(2 * (Math.atan(Math.exp(latRadians))) - Math.PI / 2));
     return new GLatLng(lat, lng);
-  };
+  }
   
   
-};
+}
 
 FloatDict getCorners(GLatLng center, int zoom, int mapWidth, int mapHeight){
     FloatDict fd = new FloatDict();
