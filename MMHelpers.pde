@@ -1,3 +1,9 @@
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+
 // -------- //
 //  helpers //
 // -------- //
@@ -39,9 +45,6 @@ String generateTileURL(GLatLng latlng)
   url += "&size=" + getTileSize().width + "x" + getTileSize().height;
   url += "&scale=" + SCALE_FACTOR + "&format=png32.png&key=" + API_KEY;
   
-  FloatDict fd = getCorners(latlng, ZOOM_LEVEL, getTileSize().width, getTileSize().height);
-  println(fd.get("N") + " " + fd.get("E") + " " + fd.get("S") + " " + fd.get("W") + " ");
-  
   return url;
 }
 
@@ -63,11 +66,65 @@ void createMaskTiles()
 void createMapTiles()
 {
   mapTiles = new PImage[16];
+  GLatLng[] tileCentres = generateTileCenters();
   
   for(int i=0; i<mapTiles.length; i++)
   {
+    String full_url = generateTileURL(tileCentres[i]);
+    int filename_start = full_url.indexOf("center=")+7;
+    int filename_end = full_url.indexOf("&format");
+    
+    String filename = full_url.substring(filename_start, filename_end) + ".png";
+    
+    File f = new File(dataPath("") + "/tiles/workington/" + filename);
+    if (!f.exists()) {
+      println("File does not exist");
+      try {
+        saveImage( full_url, f.getPath() );
+      } catch (IOException e)
+      {
+        println(e);
+      }
+    } 
     mapTiles[i] = loadImage(generateTileURL(START_LOCATION), "png");
-    image(mapTiles[i], i*(getTileSize().width*SCALE_FACTOR), i*(getTileSize().height*SCALE_FACTOR));
   }
   
+}
+
+void saveImage(String imageUrl, String destinationFile) throws IOException
+{
+  URL url = new URL(imageUrl);
+  InputStream is = url.openStream();
+  OutputStream os = new FileOutputStream(destinationFile);
+
+  byte[] b = new byte[2048];
+  int length;
+
+  while ((length = is.read(b)) != -1) {
+    os.write(b, 0, length);
+  }
+
+  is.close();
+  os.close();
+}
+
+GLatLng[] generateTileCenters()
+{
+  FloatDict fd = getCorners(START_LOCATION, ZOOM_LEVEL, getTileSize().width, getTileSize().height);
+  float lat_difference = ( START_LOCATION.lat - fd.get("S") )*2;
+  float lng_difference = ( START_LOCATION.lng - fd.get("W") )*2;
+  println(lat_difference);
+  println(lng_difference);
+
+  GLatLng[] centers = new GLatLng[16];
+  
+  for(int lat=2; lat>=-2; lat--)
+ {
+   for(int lng=-2; lng<=2; lng++)
+   {
+     centers.push(new GLatLng( START_LOCATION.lat+(lat_difference*lat), START_LOCATION.lng+(lng_difference*lng) ));
+   }
+ }
+ 
+  return centers;
 }
