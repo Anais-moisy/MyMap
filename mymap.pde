@@ -1,4 +1,4 @@
-/**
+/*
  * MyMap Visualisation 
  * 
  * Reveals map from beneath a mask layer.
@@ -9,10 +9,13 @@
  * with thanks to Jen Southern and Chris Speed 
  */
 
+boolean moveFlag;
 
 PImage mapTiles[];
 PImage maskTiles[];
 PImage testMask;
+
+WayPoint[] waypoints[];
 
 ControlApplet controls;
 PFrame f;
@@ -23,9 +26,14 @@ MouseTracker mt;
 
 
 void setup() {
-  f = new PFrame();
+  frameRate(40);
+  
+  parseXML();
+  moveFlag = false;
   
   size(SKETCH_WIDTH, SKETCH_HEIGHT);
+  
+  f = new PFrame();
   
   mt = new MouseTracker();
   
@@ -48,7 +56,14 @@ void setup() {
 }
 
 void draw() {
+  int fc = frameCount;
+  
   background(0);
+  
+  if( fc % 20 == 0 )
+  {
+//    println("tick");
+  }
   
   if( SKETCH_DRAGGABLE )
   {
@@ -56,16 +71,18 @@ void draw() {
   }
   
   int tileIndex = 0;
-  for(int x=-1; x<3; x++)
+  for(int y=-1; y<3; y++)
   {
-    for(int y=-1; y<3; y++)
+    for(int x=-1; x<3; x++)
     {
       image(mapTiles[tileIndex], x*(getTileSize().width*SCALE_FACTOR), y*(getTileSize().height*SCALE_FACTOR));
+      image(maskTiles[tileIndex], x*(getTileSize().width*SCALE_FACTOR), y*(getTileSize().height*SCALE_FACTOR));
       tileIndex++;
     }
   }
+  
 //maskTiles[0].mask(testMask);
-  image(maskTiles[0], 0 , 0);
+//
   frame.setTitle(int(frameRate) + " fps");
   
   
@@ -103,5 +120,9 @@ boolean canDrag()
     {
       return false;
     }
+}
+
+void playVis()
+{
 }
 
