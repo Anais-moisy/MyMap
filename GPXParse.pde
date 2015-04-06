@@ -16,7 +16,7 @@ void parseXML()
   for(int i=0; i<gpxArray.length; i++)
   {
     // load the data, find out how man points it has and allocate array space
-    xml = loadXML(gpxArray[0].getPath());
+    xml = loadXML(gpxArray[i].getPath());
     XML[] trkpt = xml.getChild("trk").getChild("trkseg").getChildren("trkpt");
     waypoints[i] = new WayPoint[trkpt.length];
     
@@ -29,6 +29,8 @@ void parseXML()
       GLatLng latlng = new GLatLng( trkpt[i].getFloat("lat"), trkpt[i].getFloat("lon") );
       waypoints[i][j] = new WayPoint(latlng, cal.getTimeInMillis(), "");
     }
+    
+//    println(waypoints[i].length);
   }
   
   
