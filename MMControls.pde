@@ -2,6 +2,8 @@ import java.awt.Frame;
 import controlP5.*;
 
 ControlP5 cp5;
+Button b1;
+Button b2;
 
 public class PFrame extends Frame {
     public PFrame() {
@@ -21,13 +23,18 @@ public class ControlApplet extends PApplet {
         
         cp5 = new ControlP5(this);
         // create a new button with name 'buttonA'
-        Button b = cp5.addButton("Begin Visualisation")
+        b1 = cp5.addButton("PLAY")
            .setValue(0)
            .setPosition(100,10)
-           .setSize(100,19)
+           .setSize(100,20)
            ;
            
-        b.captionLabel().setText("PLAY");
+        b2 = cp5.addButton("RESTART")
+           .setValue(0)
+           .setPosition(100,35)
+           .setSize(100,20)
+           ;
+           
     }
 
     public void draw() {
@@ -38,11 +45,24 @@ public class ControlApplet extends PApplet {
     }
     
     public void controlEvent(ControlEvent theEvent) {
+      
+      if( frameCount < 40 ){ return; }
+
       String name = theEvent.getController().getName();
       if( name == "PLAY" )
       {
-        // if playing == false --> can play vis
-        // else --> stop vis
+        if( !stepThrough )
+        {
+          stepThrough = true;
+        }
+        else
+        {
+          stepThrough = false;
+        }
+      }
+      else if (name == "RESTART")
+      {
+        currentTime = startTime;
       }
     }
 }
