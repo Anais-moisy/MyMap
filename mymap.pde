@@ -14,12 +14,13 @@ boolean stepThrough = true;
 
 PImage mapTiles[];
 PImage maskTiles[];
-PImage testMask;
+//PImage testMask;
 
-long startTime = 999999999;
-long currentTime = 0;
+int startTime = 2147483647;
+int currentTime = 0;
 
 WayPoint[] waypoints[];
+ArrayList<WayPoint>[] waypoints_list;
 
 ControlApplet controls;
 PFrame f;
@@ -45,6 +46,7 @@ void setup() {
   createMapTiles();
   createMaskTiles();
   
+  /*
   testMask = createImage(getTileSize().width*SCALE_FACTOR, getTileSize().height*SCALE_FACTOR, RGB);
   for (int i = 0; i < testMask.pixels.length; i++) {
     if(i%5==0 || i%3==0)
@@ -56,7 +58,7 @@ void setup() {
     }
   }
   testMask.updatePixels();
-
+  */
 }
 
 void draw() {
@@ -66,10 +68,10 @@ void draw() {
   
   if( stepThrough )
   {
-    if( fc % 20 == 0 )
+    if( fc % FRAMES_BETWEEN_TICK == 0 )
     {
-      println(stepThrough);
-      println("tick");
+      tickMask();
+      currentTime += TIME_PER_TICK;
     }
   }
   
@@ -84,16 +86,13 @@ void draw() {
     for(int x=-1; x<3; x++)
     {
       image(mapTiles[tileIndex], x*(getTileSize().width*SCALE_FACTOR), y*(getTileSize().height*SCALE_FACTOR));
+      //maskTiles[0].mask(testMask);
       image(maskTiles[tileIndex], x*(getTileSize().width*SCALE_FACTOR), y*(getTileSize().height*SCALE_FACTOR));
       tileIndex++;
     }
   }
   
-//maskTiles[0].mask(testMask);
-//
   frame.setTitle(int(frameRate) + " fps");
-  
-  
   controls.redraw();
 }
 
