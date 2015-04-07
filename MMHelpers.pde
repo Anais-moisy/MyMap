@@ -135,10 +135,30 @@ GLatLng[] generateTileCentres()
   return centres;
 }
 
-void updateStartTime( long newStart )
+void updateStartTime( int newStart )
 {
   if( newStart < startTime )
   {
     startTime = newStart;
+  }
+}
+
+void tickMask()
+{
+  for(int i=0; i<waypoints_list.length; i++)
+  {
+    // lets see whether the next value up is
+    // ready for animation
+    WayPoint candidate = waypoints_list[i].get(0);
+    if( candidate.getTimestamp() < currentTime )
+    {
+      println("Drawing waypoint " + candidate.getPos().lat + ", " + candidate.getPos().lng);
+      waypoints_list[i].remove(0);
+    }
+    else
+    {
+      println("nope "+ candidate.getTimestamp() + "> " + currentTime);
+    }
+    println(waypoints_list[i].size());
   }
 }
