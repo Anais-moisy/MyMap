@@ -54,10 +54,12 @@ public class ControlApplet extends PApplet {
         if( !stepThrough )
         {
           stepThrough = true;
+          theEvent.getController().setCaptionLabel("STOP");
         }
         else
         {
           stepThrough = false;
+          theEvent.getController().setCaptionLabel("START");
         }
       }
       else if (name == "RESTART")
