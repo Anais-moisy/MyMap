@@ -143,7 +143,7 @@ void updateStartTime( int newStart )
   }
 }
 
-void tickMask()
+void performTick()
 {
   for(int i=0; i<waypoints_list.length; i++)
   {
@@ -155,10 +155,34 @@ void tickMask()
       println("Drawing waypoint " + candidate.getPos().lat + ", " + candidate.getPos().lng);
       waypoints_list[i].remove(0);
     }
-    else
-    {
-      println("nope "+ candidate.getTimestamp() + "> " + currentTime);
-    }
-    println(waypoints_list[i].size());
   }
+}
+
+public class MapTile
+{
+  private PImage tileImage;
+  private GLatLng nw, se, middle;
+  
+  public MapTile(PImage img, GLatLng mid)
+  {
+    this.tileImage = img;
+    this.middle = mid;
+  }
+  
+  public PImage getTileImage()
+  {
+    return this.tileImage;
+  }
+  
+  public GLatLng getNWPos()
+  {
+    return this.nw;
+  }
+  
+  public GLatLng getSEPos()
+  {
+    return this.se;
+  }
+  
+  
 }

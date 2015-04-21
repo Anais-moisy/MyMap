@@ -33,6 +33,19 @@ class GLatLng {
      this.lat = lt;
      this.lng = ln;
   }
+  
+//  public static boolean isWithinTile(GLatLng latlng, GLatLng nw, GLatLng se)
+//  {
+//    if(
+//      latlng.lat < nw.lat &&
+//      latlng.lat > se.lat && 
+//      latlng.lng > nw.lng &&
+//      latlng.lng < se.lng
+//      )
+//      {
+//        
+//      }
+//  }
 }
 
 class MercatorProjection {

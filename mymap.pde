@@ -70,7 +70,7 @@ void draw() {
   {
     if( fc % FRAMES_BETWEEN_TICK == 0 )
     {
-      tickMask();
+      performTick();
       currentTime += TIME_PER_TICK;
     }
   }

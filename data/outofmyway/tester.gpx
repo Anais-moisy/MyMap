@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.0" creator="GPSBabel - http://www.gpsbabel.org" xmlns="http://www.topografix.com/GPX/1/0">
+  <time>2015-04-02T11:39:44.161Z</time>
+  <trk>
+    <trkseg>
+      <trkpt lat="54.675784466" lon="-3.554695631">
+        <time>2015-04-02T09:03:01Z</time>
+        <speed>1.092000</speed>
+      </trkpt>
+      <trkpt lat="54.675795614" lon="-3.554725051">
+        <time>2015-04-02T09:03:02Z</time>
+        <speed>2.010000</speed>
+      </trkpt>
+      <trkpt lat="54.675749095" lon="-3.554703761">
+        <time>2015-04-02T09:03:54Z</time>
+        <speed>0.232000</speed>
+      </trkpt>
+      <trkpt lat="54.675712717" lon="-3.554594126">
+        <time>2015-04-02T09:04:57Z</time>
+        <speed>1.005000</speed>
+      </trkpt>
+      <trkpt lat="54.675690254" lon="-3.554519946">
+        <time>2015-04-02T09:05:03Z</time>
+        <speed>1.220000</speed>
+      </trkpt>
+    </trkseg>
+  </trk>
+</gpx>
