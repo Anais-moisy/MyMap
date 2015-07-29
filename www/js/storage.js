@@ -1,80 +1,85 @@
-function initStorage ()
+
+if ( localStorage.getItem("pointStorage") === null )
 {
-	localStorage.pointStorage = JSON.stringify(
+   localStorage.pointStorage = JSON.stringify(
 		{
-			last_updated: theTime(),
+			last_updated: new Date().toISOString(),
 			routes: []
 		}
 	);
 }
 
-function loadFromStorage()
-{
-	storageObj = JSON.parse(localStorage.pointStorage);
-}
 
-function storageExists ()
-{
-	if ( !localStorage.pointStorage )
-	{
-		return false;
-	}
-	else if ( localStorage.pointStorage.length < 1 )
-	{
-		return false;
-	}
-	else
-	{
-		return true;
-	}
-}
+window.PointStorage = {
 
-function theTime()
+PointsObj: JSON.parse(localStorage.pointStorage),
+
+theTime: function ()
 {
 	var d = new Date();
 	var isoDate = d.toISOString();
 
 	return isoDate;
-}
+},
 
-function saveRouteUpdate ()
+saveRouteUpdate:function ()
 {
-	storageObj.last_updated = theTime();
-	localStorage.pointStorage = JSON.stringify(storageObj);
-}
+	window.PointStorage.PointsObj.last_updated = this.theTime();
+	localStorage.pointStorage = JSON.stringify(window.PointStorage.PointsObj);
+},
 
-function createRoute ()
+createRoute:function (named)
 {
-	routeIndex = storageObj.routes.length;
+	window.routeIndex = this.PointsObj.routes.length;
 
-	storageObj.routes.push(
-		{
-			points: []
-		}
-	);
+	var n;
 
-	saveRouteUpdate();
-}
+	if(typeof named === "undefined")
+	{
+		n = new Date().toDateString();
+	}
+	else
+	{
+		n = named;
+	}
 
-function addPointToRoute( pos )
+	var theObj = window.PointStorage.PointsObj;
+
+	var route =
+	{
+		points: [],
+		name: n,
+		last_updated: this.theTime()
+	};
+
+	theObj.routes.push(route);
+
+	this.saveRouteUpdate();
+
+	return n;
+},
+
+addPointToRoute: function ( pos )
 {
-	var currentRoute = storageObj.routes[ routeIndex ];
+	var last = window.PointStorage.PointsObj.routes.length - 1;
+	var currentRoute = window.PointStorage.PointsObj.routes[last];
+	currentRoute.last_updated = this.theTime();
 	currentRoute.points.push(
 		{
 			vals: [pos.latitude, pos.longitude],
-			time: theTime()
+			time: this.theTime()
 		}
 	);
 
-	saveRouteUpdate();
-}
+	this.saveRouteUpdate();
+},
 
-function storageToPointCloud()
+storageToPointCloud: function ()
 {
-	
-}
 
-function getPointsLength ( )
+},
+
+getPointsLength: function  ( )
 {
 	if( routeIndex === -1 )
 	{
@@ -82,11 +87,18 @@ function getPointsLength ( )
 	}
 	else
 	{
-		return storageObj.routes[routeIndex].points.length;
+		return window.PointStorage.PointsObj.routes[window.routeIndex].points.length -1;
 	}
+},
+
+getPreviousPoint: function  ()
+{
+	return window.PointStorage.PointsObj.routes[window.routeIndex].points[getPointsLength() - 2];
+},
+
+getRouteAtIndex: function (index)
+{
+	return window.PointStorage.PointsObj.routes[index];
 }
 
-function getPreviousPoint ()
-{
-	return storageObj.routes[routeIndex].points[getPointsLength() - 2];
-}
+}; // end object

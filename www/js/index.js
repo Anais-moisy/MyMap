@@ -34,23 +34,20 @@ var app = {
     // The scope of 'this' is the event. In order to call the 'receivedEvent'
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function() {
-        //app.receivedEvent('deviceready');
-        // initGoogleMap();
-
-        initStorage();
-        MenuDisplay.mapScreen();
-
+        // is there storage? no = init
+        // yes = continue
+        if(window.PointStorage.PointsObj.routes.length === 0)
+        {
+            window.PointStorage.createRoute();
+        }
+        
+        MenuDisplay.activateMenu();
+        MenuDisplay.miscButtons();
     },
+
+    
     // Update DOM on a Received Event
     receivedEvent: function(id) {
-        // var parentElement = document.getElementById(id);
-        // var listeningElement = parentElement.querySelector('.listening');
-        // var receivedElement = parentElement.querySelector('.received');
-
-        // listeningElement.setAttribute('style', 'display:none;');
-        // receivedElement.setAttribute('style', 'display:block;');
-
-        // console.log('Received Event: ' + id);
     }
 };
 

@@ -1,40 +1,19 @@
-var map;
-var myOverlay;
-var storageObj;
-var routeIndex;
-var currentPaths;
+var map; // obj to add GMaps to
+var myOverlay; // The mask layer
+var storageObj = window.PointStorage.PointsObj; // Keep track of localstorage
 var watchId;
 
 var pointCloud = [];
 
-// var testCloud = [[59.30023, -3.23230], [59.20023, -3.23230],[59.38023, -3.23830],[59.32223, -3.28830],[59.30123, -3.23444],[59.40023, -3.13230],[59.37823, -3.0990]];
+var timeExpired = true;
 
-
-var lshape = [
-		[51,0],
-		[49,0],
-		[49,1.5],
-		[49.2,1.5],
-		[49.2,0.2],
-		[51,0.2]
-	];
 
 function initGoogleMap()
 {
-	/* JSON */
-
-	if( !storageExists() )
-    {
-        initStorage();
-    }
-
-    loadFromStorage();
-    createRoute();
 
     /* MAP */
 
-    // console.log('cloud to hull');
-    // console.log( hull(testCloud, 15) );
+    setInterval(function(){ timeExpired = true; }, 2000);
 
 	var mapOptions =
 	{
@@ -88,11 +67,16 @@ function initGoogleMap()
 /* This fires every time we get a location */
 var geolocationSuccess = function(position)
 {
-	console.log('position');
+
+	if(!timeExpired)
+	{
+		return;
+	}
+
+	timeExpired = false;
 
 	if(map===null)
 	{
-		console.log('error - no map');
 		return;
 	}
 
@@ -103,7 +87,7 @@ var geolocationSuccess = function(position)
 	focusMap( position );
 
 	/* store the new data */
-	addPointToRoute( position.coords );
+	window.PointStorage.addPointToRoute( position.coords );
 
 	/* 
 		create the additional geometry for the hull
@@ -112,16 +96,16 @@ var geolocationSuccess = function(position)
 	*/
 	createRect(position);
 
-	// console.log(pointCloud);
-	// console.log(hull(pointCloud, 15));
-	// console.log(convertToMVCArray(hull(pointCloud, 15)));
 
 
-	/* Push and activate our new path */
+	/* Get the current path obj */
 	var paths = myOverlay.getPaths();
-	paths.setAt(2, convertToMVCArray(hull(pointCloud, 1)) );
-	paths.setAt(3, convertToMVCArray(hull(lshape, 5)) );
 
+	/* Generate hull */
+	var calculatedHull = hull(pointCloud, 0.001);
+
+	/* Put new hull on the map */
+	paths.setAt(2, convertToMVCArray(calculatedHull) );
 	myOverlay.setPaths(paths);
 
 };
@@ -147,14 +131,14 @@ function isFirstRect ()
 
 function focusMap ( p )
 {
-	map.setZoom(16);
+	map.setZoom(17);
 	map.setCenter( new google.maps.LatLng( (p.coords.latitude - 0.00025), p.coords.longitude ) );
 }
 
 
 function clearMap ()
 {
-	routeIndex = -1;
+	window.routeIndex = -1;
 
 	myOverlay = null;
 	map = null;
@@ -167,14 +151,12 @@ function clearMap ()
 function convertToMVCArray( pairs )
 {
 	var mvc = new google.maps.MVCArray();
-	var i = 0;
 
-	while( pairs[i] )
+	for( var i=0; i<pairs.length; i++ )
 	{
 		/* Grab the lat [0] and lon[1] */
 		var latlng = new google.maps.LatLng(pairs[i][0], pairs[i][1]);
 		mvc.push(latlng);
-		i++;
 	}
 
 	return mvc;
@@ -182,8 +164,9 @@ function convertToMVCArray( pairs )
 
 function createRect(p)
 {
-	var offsetX = 0.0002;
 	var offsetY = 0.0001;
+	var offsetX = 0.0002;
+
 
 	/* Add to our big array of points to be made into a hull. */
 	pointCloud.push([(p.coords.latitude + offsetY), (p.coords.longitude - offsetX)]); // NW
@@ -194,7 +177,84 @@ function createRect(p)
 	pointCloud.push([(p.coords.latitude), (p.coords.longitude + offsetX)]); // E *
 	pointCloud.push([(p.coords.latitude + offsetY), (p.coords.longitude + offsetX)]); // NE
 	pointCloud.push([(p.coords.latitude + offsetY), (p.coords.longitude)]); // N
+	
+
+	// markerForPoint(new google.maps.LatLng(p.coords.latitude, p.coords.longitude));
+
+}
+
+function createRectFromStorage(p)
+{
+	var offsetY = 0.0001;
+	var offsetX = 0.0002;
+
+
+	/* Add to our big array of points to be made into a hull. */
+	pointCloud.push([(p[0] + offsetY), (p[1] - offsetX)]); // NW
+	pointCloud.push([(p[0]), (p[1] - offsetX)]); // W *
+	pointCloud.push([(p[0] - offsetY), (p[1] - offsetX)]); // SW
+	pointCloud.push([(p[0] - offsetY), (p[1])]); // S
+	pointCloud.push([(p[0] - offsetY), (p[1] + offsetX)]); // SE
+	pointCloud.push([(p[0]), (p[1] + offsetX)]); // E *
+	pointCloud.push([(p[0] + offsetY), (p[1] + offsetX)]); // NE
+	pointCloud.push([(p[0] + offsetY), (p[1])]); // N
+	
+
+	// markerForPoint(new google.maps.LatLng(p.coords.latitude, p.coords.longitude));
+
+}
+
+function markerForPoint(ll)
+{
+	new google.maps.Marker({
+		position: ll,
+		map: map,
+		icon: {
+			path: google.maps.SymbolPath.CIRCLE,
+			fillColor: 'red',
+			fillOpacity: 0.4,
+			scale: 4.5,
+			strokeColor: 'white',
+			strokeWeight: 1
+		}
+	});
+
+
+}
+
+function randomInRange(min, max) {
+	return Math.random() * (max-min) + min;
 }
 
 
+function loadRoutes(routes_to_load)
+{
+	if(Array.isArray(routes_to_load))
+	{
+		console.log('load some routes');
+		// extract points from storage
+		for(var i=0; i<routes_to_load.length; i++)
+		{
+			var route = window.PointStorage.PointsObj.routes[+routes_to_load[i]];
+			for(var x=0; x<route.points.length; x++)
+			{
+				// createRectSpecial
+				createRectFromStorage(route.points[i].vals);
+			}
+		}
 
+		/* Get the current path obj */
+		var paths = myOverlay.getPaths();
+
+		/* Generate hull */
+		var calculatedHull = hull(pointCloud, 0.001);
+
+		/* Put new hull on the map */
+		paths.setAt(2, convertToMVCArray(calculatedHull) );
+		myOverlay.setPaths(paths);
+	}
+	else
+	{
+		console.log('load all routes');
+	}
+}
